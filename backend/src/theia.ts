@@ -12,7 +12,6 @@ export class Theia {
     }
 
     private initCommandMappings(): void {
-        this.commandMappings.set("vscode.openFolder", "workspace:openWorkspace");
         this.commandMappings.set("workbench.action.closeActiveEditor", "core.close.tab");
     }
 
