@@ -257,6 +257,7 @@ describe('App.vue', () => {
     
     wrapper.vm.showPrompt = jest.fn()
     wrapper.vm.setPrompts = jest.fn()
+    wrapper.vm.generatorInstall = jest.fn()
     wrapper.vm.generatorDone = jest.fn()
     wrapper.vm.log = jest.fn()
 
@@ -266,6 +267,7 @@ describe('App.vue', () => {
     
     expect(registerMethodSpy).toHaveBeenCalledWith({func: wrapper.vm.showPrompt, thisArg: wrapper.vm, name: 'showPrompt'})
     expect(registerMethodSpy).toHaveBeenCalledWith({func: wrapper.vm.setPrompts, thisArg: wrapper.vm, name: 'setPrompts'})
+    expect(registerMethodSpy).toHaveBeenCalledWith({func: wrapper.vm.generatorInstall, thisArg: wrapper.vm, name: 'generatorInstall'})
     expect(registerMethodSpy).toHaveBeenCalledWith({func: wrapper.vm.generatorDone, thisArg: wrapper.vm, name: 'generatorDone'})
     expect(registerMethodSpy).toHaveBeenCalledWith({func: wrapper.vm.log, thisArg: wrapper.vm, name: 'log'})
     expect(invokeSpy).toHaveBeenCalledWith("receiveIsWebviewReady", [])
@@ -373,6 +375,25 @@ describe('App.vue', () => {
       expect(wrapper.vm.promptIndex).toBe(2)
       expect(wrapper.vm.prompts[0].active).toBeFalsy()
       expect(wrapper.vm.prompts[2].active).toBeTruthy()
+    })
+  })
+
+  describe('generatorInstall - method', () => {
+    window.vscode = {
+      postMessage: jest.fn()
+    }
+      
+    test('status is pending', () => {
+      wrapper = initComponent(App)
+      wrapper.vm.isInVsCode = jest.fn().mockResolvedValue(true)
+      wrapper.vm.prompts = [{}, {}]
+      wrapper.vm.promptIndex = 1
+      wrapper.vm.currentPrompt.status = 'pending'
+
+      wrapper.vm.generatorInstall()
+
+      expect(wrapper.vm.isDone).toBeFalsy()
+      expect(window.vscode.postMessage).toHaveBeenCalled()
     })
   })
 
